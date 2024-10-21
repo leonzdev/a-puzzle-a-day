@@ -47,25 +47,27 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
   };
 
   return (
-    <div className="grid grid-cols-7 gap-1 mb-4">
-      {board.map((row, rowIndex) =>
-        row.map((cell, colIndex) => {
+    <div className="text-center">
+      <div className="inline-grid grid-cols-7 gap-1 mb-4">
+        {board.map((row, rowIndex) =>
+          row.map((cell, colIndex) => {
 
-          return <div
-            key={`${rowIndex}-${colIndex}`}
-            className={`w-12 h-12 border ${
-              cell === -1
-                ? 'bg-gray-300 cursor-pointer'
-                : cell === -2
-                ? 'bg-gray-100'
-                : colors[cell] || 'bg-white'
-            } flex items-center justify-center text-sm font-semibold`}
-            onClick={board[rowIndex][colIndex] === null ? () => null : () => onCellClick(rowIndex, colIndex)}
-          >
-            {getMonthAndDate(rowIndex, colIndex)}
-          </div>
-      })
-      )}
+            return <div
+              key={`${rowIndex}-${colIndex}`}
+              className={`w-12 h-12 border ${
+                cell === -1
+                  ? 'bg-gray-300 cursor-pointer'
+                  : cell === -2
+                  ? 'bg-gray-100'
+                  : colors[cell] || 'bg-white'
+              } flex items-center justify-center text-sm font-semibold`}
+              onClick={board[rowIndex][colIndex] === null ? () => null : () => onCellClick(rowIndex, colIndex)}
+            >
+              {getMonthAndDate(rowIndex, colIndex)}
+            </div>
+        })
+        )}
+      </div>
     </div>
   );
 };
