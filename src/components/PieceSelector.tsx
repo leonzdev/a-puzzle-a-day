@@ -20,6 +20,7 @@ const PieceSelector: React.FC<PieceSelectorProps> = ({
     'bg-purple-200',
     'bg-pink-200',
     'bg-indigo-200',
+    'bg-orange-200',
   ];
 
   return (
@@ -32,14 +33,21 @@ const PieceSelector: React.FC<PieceSelectorProps> = ({
           }`}
           onClick={() => onPieceSelect(piece)}
         >
-          <div className="grid grid-cols-3 gap-1">
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${piece.shape[0].length}, auto)`,
+              gridTemplateRows: `repeat(${piece.shape.length}, auto)`,
+              gap: '1px',
+            }}
+          >
             {piece.shape.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
                 <div
                   key={`${rowIndex}-${colIndex}`}
                   className={`w-6 h-6 ${
                     cell ? colors[piece.id] : 'bg-transparent'
-                  }`}
+                  }`}          
                 />
               ))
             )}

@@ -4,60 +4,72 @@ const pieces: Piece[] = [
   {
     id: 0,
     shape: [
-      [1, 1, 1],
-      [1, 0, 0],
-      [1, 0, 0],
+      [1, 1, 1, 1],
+      [1, 0, 0, 0],
     ],
   },
   {
     id: 1,
     shape: [
-      [1, 1, 1],
-      [0, 1, 0],
-      [0, 1, 0],
+      [1, 1],
+      [1, 1],
+      [0, 1],
     ],
   },
   {
     id: 2,
     shape: [
-      [1, 1, 0],
-      [0, 1, 1],
-      [0, 0, 1],
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [1, 0],
     ],
   },
   {
     id: 3,
     shape: [
+      [1, 0, 0],
       [1, 1, 1],
-      [1, 1, 0],
+      [0, 0, 1]
     ],
   },
   {
     id: 4,
     shape: [
-      [1, 1, 1, 1],
-      [1, 0, 0, 0],
+      [0, 1],
+      [1, 1],
+      [0, 1],
+      [0, 1],
     ],
   },
   {
     id: 5,
     shape: [
       [1, 1, 1],
-      [0, 0, 1],
-      [0, 0, 1],
+      [1, 0, 0],
+      [1, 0, 0],
     ],
   },
   {
     id: 6,
     shape: [
       [1, 1, 1],
+      [1, 1, 1],
+    ],
+  },
+  {
+    id: 7,
+    shape: [
       [1, 0, 1],
+      [1, 1, 1],
     ],
   },
 ];
 
 export function generatePuzzle(date: Date): PuzzleState {
-  // const board = Array(7).fill(null);
+  // first 2 rows have 6 columns and they fill months
+  // next 4 rows have 7 cells
+  // the last row has 3 cells
   const board: Array<Array<number | null>> = [
     [-1, -1, -1, -1, -1, -1, null],
     [-1, -1, -1, -1, -1, -1, null],
@@ -67,27 +79,12 @@ export function generatePuzzle(date: Date): PuzzleState {
     [-1, -1, -1, -1, -1, -1, -1],
     [-1, -1, -1, null, null, null, null],
   ];
-  // first 2 rows have 6 columns and they fill months
 
-  // next 4 rows have 7 cells
-
-  // the last row has 3 cells
-
-  // Mark all month cells
-  for (let i = 0; i < 8; i++) {
-    if (i < 6) {
-      board[0][i] = -2;
-    } else if (i === 6) {
-      board[0][6] = -2;
-    } else {
-      board[1][0] = -2;
-    }
-  }
-
-  // Mark the date on the board
+  // Mark the month and date on the board
   const month = date.getMonth();
   const day = date.getDate() - 1;
-  board[Math.floor(day / 7) + 1][day % 7] = -2;
+  board[Math.floor(month / 6)][month % 6] = -2
+  board[Math.floor(day / 7) + 2][day % 7] = -2;
 
   return { board, pieces };
 }

@@ -17,51 +17,54 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
   ];
 
   const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+    [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+    ],
+    [    
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]
+  ]
+
 
   const getMonthAndDate = (rowIndex: number, colIndex: number): string => {
-    if (rowIndex === 0 && colIndex < 6) {
-      return months[colIndex];
-    } else if (rowIndex === 0 && colIndex === 6) {
-      return months[6];
-    } else if (rowIndex === 1 && colIndex === 0) {
-      return months[7];
-    } else if (rowIndex > 0 && board[rowIndex][colIndex] === -2) {
-      return ((rowIndex - 1) * 7 + colIndex + 1).toString();
+    if (board[rowIndex][colIndex] !== -2) {
+      return ''
     }
-    return '';
+    if (rowIndex <= 1) {
+      return months[rowIndex][colIndex]
+    }
+    return ((rowIndex - 2) * 7 + colIndex + 1).toString();
   };
 
   return (
     <div className="grid grid-cols-7 gap-1 mb-4">
       {board.map((row, rowIndex) =>
-        row.map((cell, colIndex) => (
-          <div
+        row.map((cell, colIndex) => {
+
+          return <div
             key={`${rowIndex}-${colIndex}`}
             className={`w-12 h-12 border ${
               cell === -1
-                ? 'bg-gray-300'
+                ? 'bg-gray-300 cursor-pointer'
                 : cell === -2
                 ? 'bg-gray-100'
                 : colors[cell] || 'bg-white'
-            } cursor-pointer flex items-center justify-center text-sm font-semibold`}
-            onClick={() => onCellClick(rowIndex, colIndex)}
+            } flex items-center justify-center text-sm font-semibold`}
+            onClick={board[rowIndex][colIndex] === null ? () => null : () => onCellClick(rowIndex, colIndex)}
           >
             {getMonthAndDate(rowIndex, colIndex)}
           </div>
-        ))
+      })
       )}
     </div>
   );
