@@ -14,6 +14,7 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
     'bg-purple-200',
     'bg-pink-200',
     'bg-indigo-200',
+    'bg-orange-200',
   ];
 
   const months = [
