@@ -11,3 +11,11 @@ This app is created using Bolt.dev
 * Ran out of free tokens just after the game is playable.
 * Fixed minor bugs and styling issues with help from ChatGPT O1.
 * Maybe I will ask ChatGPT to add further functions such as a solver or a date picker.
+
+# Impression of bolt.dev
+* 1-shot working app is impressive
+* However, code is done in a hacky style:
+  * Hardcodings
+  * Repetitions
+  * A lot of in-line components creating a lot of coupling. Not easy for a human dev to browse and make manual changes. This is my main complain and concern of bolt.dev
+* Too few free tokens
