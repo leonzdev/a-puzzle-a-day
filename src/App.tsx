@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Check, RotateCw, Trash2 } from 'lucide-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import PuzzleBoard from './components/PuzzleBoard';
 import PieceSelector from './components/PieceSelector';
 import {
@@ -102,6 +104,10 @@ function App() {
     }
   };
 
+  const handleDateChange = (date: Date) => {
+    setCurrentDate(date);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <h1 className="text-3xl font-bold mb-4 flex items-center">
@@ -133,6 +139,12 @@ function App() {
         />
       </div>
       <div className="mt-4 flex items-center">
+        <DatePicker
+          selected={currentDate}
+          onChange={handleDateChange}
+          dateFormat="MMMM d, yyyy"
+          className="bg-white border border-gray-300 rounded px-3 py-2 mr-2"
+        />
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
           onClick={() => setCurrentDate(new Date())}
