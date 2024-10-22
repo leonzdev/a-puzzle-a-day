@@ -4,10 +4,9 @@ import { Board } from '../types';
 interface PuzzleBoardProps {
   board: Board;
   onCellClick: (row: number, col: number) => void;
-  solution?: Board;
 }
 
-const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick, solution }) => {
+const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
   const colors = [
     'bg-red-200',
     'bg-blue-200',

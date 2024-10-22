@@ -127,7 +127,6 @@ function App() {
         <PuzzleBoard 
           board={puzzle.board} 
           onCellClick={handleCellClick}
-          solution={currentSolutionIndex !== -1 ? solutions[currentSolutionIndex] : undefined}
         />
         <div className="flex justify-center space-x-4 mb-4">
           {solutions.length == 0 && (
