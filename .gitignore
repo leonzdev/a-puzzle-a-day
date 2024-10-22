@@ -22,6 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Exclude package-lock.json cause it breaks gh actions
-package-lock.json

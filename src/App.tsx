@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Check, RotateCw, Trash2, Lightbulb } from 'lucide-react';
+import { Calendar, Check, RotateCw, Trash2 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import PuzzleBoard from './components/PuzzleBoard';
@@ -9,9 +9,7 @@ import {
   isValidPlacement,
   rotatePiece,
 } from './utils/puzzleGenerator';
-import { solvePuzzle } from './utils/puzzleSolver';
-import { Board, Piece, PuzzleState } from './types';
-import { placePiece, removePiece } from './utils/pieceUtils';
+import { Piece, PuzzleState } from './types';
 
 function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -19,15 +17,11 @@ function App() {
   const [selectedPiece, setSelectedPiece] = useState<Piece | null>(null);
   const [removeMode, setRemoveMode] = useState(false);
   const [placedPieces, setPlacedPieces] = useState<Set<number>>(new Set());
-  const [solutions, setSolutions] = useState<Board[]>([]);
-  const [currentSolutionIndex, setCurrentSolutionIndex] = useState(-1);
 
   useEffect(() => {
     const newPuzzle = generatePuzzle(currentDate);
     setPuzzle(newPuzzle);
     setPlacedPieces(new Set());
-    setSolutions([]);
-    setCurrentSolutionIndex(-1);
   }, [currentDate]);
 
   const handlePieceSelect = (piece: Piece) => {
@@ -37,20 +31,27 @@ function App() {
 
   const handleCellClick = (row: number, col: number) => {
     if (removeMode) {
-      handleRemovePiece(row, col);
+      removePiece(row, col);
     } else if (selectedPiece) {
-      handlePlacePiece(row, col);
+      placePiece(row, col);
     }
   };
 
-  const handlePlacePiece = (row: number, col: number) => {
+  const placePiece = (row: number, col: number) => {
     if (!selectedPiece) return;
 
-    const newBoard = puzzle.board.map(row => [...row]);
+    const newBoard = [...puzzle.board];
     const newPlacedPieces = new Set(placedPieces);
 
     if (isValidPlacement(newBoard, selectedPiece, row, col)) {
-      placePiece(newBoard, selectedPiece, row, col);
+      selectedPiece.shape.forEach((shapeRow, r) => {
+        shapeRow.forEach((cell, c) => {
+          if (cell) {
+            newBoard[row + r][col + c] = selectedPiece.id;
+          }
+        });
+      });
+
       newPlacedPieces.add(selectedPiece.id);
 
       setPuzzle((prev) => ({
@@ -62,24 +63,28 @@ function App() {
     }
   };
 
-  const handleRemovePiece = (row: number, col: number) => {
+  const removePiece = (row: number, col: number) => {
     const pieceId = puzzle.board[row][col];
     if (pieceId == null || pieceId < 0) return;
 
-    const newBoard = puzzle.board.map(row => [...row]);
+    const newBoard = puzzle.board.map((row) => [...row]);
     const newPlacedPieces = new Set(placedPieces);
-    const pieceToRemove = puzzle.pieces.find(p => p.id === pieceId);
 
-    if (pieceToRemove) {
-      removePiece(newBoard, pieceToRemove, row, col);
-      newPlacedPieces.delete(pieceId);
-
-      setPuzzle((prev) => ({
-        ...prev,
-        board: newBoard,
-      }));
-      setPlacedPieces(newPlacedPieces);
+    for (let i = 0; i < newBoard.length; i++) {
+      for (let j = 0; j < newBoard[i].length; j++) {
+        if (newBoard[i][j] === pieceId) {
+          newBoard[i][j] = -1;
+        }
+      }
     }
+
+    newPlacedPieces.delete(pieceId);
+
+    setPuzzle((prev) => ({
+      ...prev,
+      board: newBoard,
+    }));
+    setPlacedPieces(newPlacedPieces);
   };
 
   const handleRotate = () => {
@@ -102,29 +107,13 @@ function App() {
     setCurrentDate(date);
   };
 
-  const handleSolve = () => {
-    if (solutions.length === 0) {
-      const newSolutions = solvePuzzle(puzzle);
-      setSolutions(newSolutions);
-      setCurrentSolutionIndex(0);
-    } else {
-      setCurrentSolutionIndex((prevIndex: number) =>
-        (prevIndex + 1) % solutions.length
-      );
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <h1 className="text-3xl font-bold mb-4 flex items-center">
         <Calendar className="mr-2" /> A Puzzle a Day
       </h1>
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <PuzzleBoard 
-          board={puzzle.board} 
-          onCellClick={handleCellClick} 
-          solution={currentSolutionIndex !== -1 ? solutions[currentSolutionIndex] : undefined}
-        />
+        <PuzzleBoard board={puzzle.board} onCellClick={handleCellClick} />
         <div className="flex justify-center space-x-4 mb-4">
           <button
             className={`px-4 py-2 rounded ${
@@ -140,13 +129,6 @@ function App() {
             disabled={!selectedPiece}
           >
             <RotateCw className="inline-block mr-2" /> Rotate Piece
-          </button>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded"
-            onClick={handleSolve}
-          >
-            <Lightbulb className="inline-block mr-2" /> 
-            {solutions.length === 0 ? 'Solve' : `Next Solution (${currentSolutionIndex + 1}/${solutions.length})`}
           </button>
         </div>
         <PieceSelector
