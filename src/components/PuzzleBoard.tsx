@@ -50,7 +50,7 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
 
   return (
     <div className="text-center">
-      <div className="inline-grid grid-cols-7 gap-1 mb-4">
+      <div className="inline-grid grid-cols-7 gap-0 mb-4">
         {board.map((row, rowIndex) =>
           row.map((cell, colIndex) => {
             return <div
