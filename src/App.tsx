@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Check, RotateCw, Trash2, Lightbulb } from 'lucide-react';
+import { Calendar, Check, RotateCw, Trash2, Lightbulb, FlipHorizontal } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import PuzzleBoard from './components/PuzzleBoard';
@@ -7,7 +7,7 @@ import PieceSelector from './components/PieceSelector';
 import { generatePuzzle } from './utils/puzzleGenerator';
 import { solvePuzzle } from './utils/puzzleSolver';
 import { Board, Piece, PuzzleState } from './types';
-import { placePiece, removePiece, rotatePiece } from './utils/pieceUtils';
+import { placePiece, removePiece, rotatePiece, flipPiece, getAllVariants } from './utils/pieceUtils';
 
 function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -87,6 +87,22 @@ function App() {
     }
   };
 
+  const handleFlip = () => {
+    if (!selectedPiece) return;
+    // console.log(getAllVariants(selectedPiece))
+    const flippedPiece = {
+      ...selectedPiece,
+      shape: flipPiece(selectedPiece.shape)
+    }
+    setSelectedPiece(flippedPiece);
+    setPuzzle((prev) => ({
+      ...prev,
+      pieces: prev.pieces.map((p) =>
+        p.id === flippedPiece.id ? flippedPiece : p
+      ),
+    }));
+  };
+
   const handleDateChange = (date: Date) => {
     setCurrentDate(date);
     // Also clear solutions
@@ -132,29 +148,40 @@ function App() {
           {solutions.length == 0 && (
             <button
               className={`px-4 py-2 rounded ${
-                removeMode ? 'bg-red-500 text-white' : 'bg-gray-200'
-              }`}
+                removeMode
+                  ? 'bg-red-500 text-white'
+                  : 'bg-gray-200 text-gray-700'
+              } hover:opacity-90`}
               onClick={() => setRemoveMode(!removeMode)}
             >
-              <Trash2 className="inline-block mr-2" /> Remove Piece
-            </button>        
+              <Trash2 className="w-5 h-5" />
+            </button>
           )}
 
           {solutions.length == 0 && (
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:opacity-90 disabled:opacity-50"
               onClick={handleRotate}
               disabled={!selectedPiece}
             >
-              <RotateCw className="inline-block mr-2" /> Rotate Piece
+              <RotateCw className="w-5 h-5" />
+            </button>
+          )}
+          {solutions.length == 0 && (
+            <button
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:opacity-90 disabled:opacity-50"
+              onClick={handleFlip}
+              disabled={!selectedPiece}
+            >
+              <FlipHorizontal className="w-5 h-5" />
             </button>
           )}
           <button
-            className="bg-green-500 text-white px-4 py-2 rounded"
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:opacity-90"
             onClick={handleSolve}
           >
-            <Lightbulb className="inline-block mr-2" /> 
-            {solutions.length === 0 ? 'Solve' : `Next Solution (${currentSolutionIndex + 1}/${solutions.length})`}
+            <Lightbulb className="w-5 h-5" /> 
+            {solutions.length === 0 ? '' : `${currentSolutionIndex + 1}/${solutions.length}`}
           </button>
         </div>
         <PieceSelector

@@ -27,7 +27,7 @@ export function removePiece(board: Board, pieceId: number|null) {
   }
 }
 
-export function rotatePiece(shape: number[][]): number[][] {
+export function rotatePiece(shape: PieceShape): PieceShape {
   const rows = shape.length;
   const cols = shape[0].length;
   const rotated = Array(cols)
@@ -43,6 +43,35 @@ export function rotatePiece(shape: number[][]): number[][] {
   return rotated;
 }
 
+export function flipPiece(shape: PieceShape): PieceShape {
+  return shape.map(row => [...row].reverse());
+}
+
+export function getAllVariants(piece: Piece): Piece[] {
+  const variants: Piece[] = [{...piece}];
+  let currentShape = piece.shape;
+
+  // rotate
+  ROTATE_LOOP: for (let i = 0; i < 3; i++) {
+    const nextShape = rotatePiece(currentShape);
+    if (!hasVariant(variants, nextShape)) {
+      variants.push({ ...piece, shape: nextShape });
+      currentShape = nextShape;
+    } else {
+      break ROTATE_LOOP;
+    }
+  }
+
+  // flip
+  for (let p of variants) {
+    const flippedShape = flipPiece(p.shape)
+    if (!hasVariant(variants, flippedShape)) {
+      variants.push({...p, shape: flippedShape});
+    }
+  }
+  return variants;
+}
+
 export function isSameShape(shape1: PieceShape, shape2: PieceShape): boolean {
   if (shape1.length !== shape2.length) {
     return false;
@@ -51,11 +80,21 @@ export function isSameShape(shape1: PieceShape, shape2: PieceShape): boolean {
     return false;
   }
   for (let i = 0; i < shape1.length; i++) {
-    for (let j = 0; j < shape2.length; j++) {
+    for (let j = 0; j < shape1[0].length; j++) {
       if (shape1[i][j] !== shape2[i][j]) {
         return false;
       }
     }
   }
   return true;
+}
+
+function hasVariant(variants: Piece[], newShape: PieceShape): boolean {
+  for (let v of variants) {
+    if (isSameShape(v.shape, newShape)) {
+      return true;
+    }
+  }
+
+  return false;
 }
