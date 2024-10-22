@@ -176,9 +176,6 @@ function App() {
         >
           Today's Puzzle
         </button>
-        <p className="text-lg font-semibold">
-          {currentDate.toLocaleDateString()}
-        </p>
       </div>
       {placedPieces.size === puzzle.pieces.length && (
         <div className="mt-4 text-green-600 flex items-center">
