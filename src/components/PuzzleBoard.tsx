@@ -1,8 +1,10 @@
 import React from 'react';
+import { Board } from '../types';
 
 interface PuzzleBoardProps {
-  board: number[][];
+  board: Board;
   onCellClick: (row: number, col: number) => void;
+  solution?: Board;
 }
 
 const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {

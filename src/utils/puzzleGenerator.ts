@@ -1,4 +1,4 @@
-import { Piece, PuzzleState } from '../types';
+import { Board, Piece, PuzzleState } from '../types';
 
 const pieces: Piece[] = [
   {
@@ -90,7 +90,7 @@ export function generatePuzzle(date: Date): PuzzleState {
 }
 
 export function isValidPlacement(
-  board: number[][],
+  board: Board,
   piece: Piece,
   row: number,
   col: number

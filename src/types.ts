@@ -3,7 +3,8 @@ export interface Piece {
   shape: number[][];
 }
 
+export type Board = Array<Array<null | number>>
 export interface PuzzleState {
-  board: Array<Array<null | number>>;
+  board: Board;
   pieces: Piece[];
 }
