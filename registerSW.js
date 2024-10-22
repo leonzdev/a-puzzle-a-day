@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('https://leonzdev.github.io/a-puzzle-a-day/sw.js', { scope: 'https://leonzdev.github.io/a-puzzle-a-day/' })})}
