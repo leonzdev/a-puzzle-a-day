@@ -1,6 +1,6 @@
 import { Board, Piece, PuzzleState } from '../types';
 
-const pieces: Piece[] = [
+export const pieces: Piece[] = [
   {
     id: 0,
     shape: [
@@ -60,8 +60,8 @@ const pieces: Piece[] = [
   {
     id: 7,
     shape: [
-      [1, 0, 1],
       [1, 1, 1],
+      [1, 0, 1],
     ],
   },
 ];
@@ -111,18 +111,3 @@ export function isValidPlacement(
   return true;
 }
 
-export function rotatePiece(shape: number[][]): number[][] {
-  const rows = shape.length;
-  const cols = shape[0].length;
-  const rotated = Array(cols)
-    .fill(null)
-    .map(() => Array(rows).fill(0));
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      rotated[c][rows - 1 - r] = shape[r][c];
-    }
-  }
-
-  return rotated;
-}

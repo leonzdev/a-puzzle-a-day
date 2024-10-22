@@ -7,7 +7,7 @@ interface PuzzleBoardProps {
   solution?: Board;
 }
 
-const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
+const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick, solution }) => {
   const colors = [
     'bg-red-200',
     'bg-blue-200',
@@ -54,11 +54,12 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
       <div className="inline-grid grid-cols-7 gap-1 mb-4">
         {board.map((row, rowIndex) =>
           row.map((cell, colIndex) => {
-
             return <div
               key={`${rowIndex}-${colIndex}`}
               className={`w-12 h-12 border ${
-                cell === -1
+                cell === null
+                  ? 'bg-white'
+                  : cell === -1
                   ? 'bg-gray-300 cursor-pointer'
                   : cell === -2
                   ? 'bg-gray-100'
@@ -68,7 +69,7 @@ const PuzzleBoard: React.FC<PuzzleBoardProps> = ({ board, onCellClick }) => {
             >
               {getMonthAndDate(rowIndex, colIndex)}
             </div>
-        })
+          })
         )}
       </div>
     </div>

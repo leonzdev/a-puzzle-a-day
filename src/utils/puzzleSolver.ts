@@ -1,11 +1,9 @@
 import { Piece, PuzzleState, Board } from '../types';
-import { isValidPlacement, rotatePiece } from './puzzleGenerator';
-import { placePiece, removePiece } from './pieceUtils';
+import { isSameShape, placePiece, removePiece, rotatePiece } from './pieceUtils';
 
 export function solvePuzzle(puzzle: PuzzleState): Board[] {
+  const {board, pieces} = puzzle
   const solutions: Board[] = [];
-  const board = puzzle.board.map(row => [...row]);
-  const pieces = [...puzzle.pieces];
 
   function backtrack(index: number) {
     if (index === pieces.length) {
@@ -19,10 +17,9 @@ export function solvePuzzle(puzzle: PuzzleState): Board[] {
     for (const rotatedPiece of rotations) {
       for (let row = 0; row < board.length; row++) {
         for (let col = 0; col < board[0].length; col++) {
-          if (isValidPlacement(board, rotatedPiece, row, col)) {
-            placePiece(board, rotatedPiece, row, col);
+          if (placePiece(board, rotatedPiece, row, col)) {
             backtrack(index + 1);
-            removePiece(board, rotatedPiece, row, col);
+            removePiece(board, index);
           }
         }
       }
@@ -34,12 +31,18 @@ export function solvePuzzle(puzzle: PuzzleState): Board[] {
 }
 
 function getAllRotations(piece: Piece): Piece[] {
-  const rotations: Piece[] = [];
+  const rotations: Piece[] = [{...piece}];
   let currentShape = piece.shape;
 
-  for (let i = 0; i < 4; i++) {
-    rotations.push({ ...piece, shape: currentShape });
-    currentShape = rotatePiece(currentShape);
+  ROTATE_LOOP: for (let i = 0; i < 3; i++) {
+    const nextShape = rotatePiece(currentShape);
+    for (let j = 0; j < rotations.length; j++) {
+      if (isSameShape(rotations[j].shape, nextShape)) {
+        break ROTATE_LOOP;
+      }
+    }
+    rotations.push({ ...piece, shape: nextShape });
+    currentShape = nextShape;
   }
 
   return rotations;

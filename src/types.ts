@@ -1,6 +1,7 @@
+export type PieceShape = Array<Array<number>>
 export interface Piece {
   id: number;
-  shape: number[][];
+  shape: PieceShape;
 }
 
 export type Board = Array<Array<null | number>>
