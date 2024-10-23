@@ -17,7 +17,8 @@ export function solvePuzzle(puzzle: PuzzleState): Board[] {
   let emptyCells: { row: number, col: number }[] = [];
   board.forEach((row, r) => {
     row.forEach((cell, c) => {
-      if (cell === -1) emptyCells.push({ row: r, col: c });
+      // if (cell === -1) 
+      emptyCells.push({ row: r, col: c });
     });
   });
 
@@ -32,9 +33,9 @@ export function solvePuzzle(puzzle: PuzzleState): Board[] {
   }
 
   function backtrack(index: number) {
-    if (solutions.length > 0) {
-      return;
-    }
+    // if (solutions.length > 0) {
+    //   return;
+    // }
     if (index === pieces.length) {
       solutions.push(board.map(row => [...row])); // Add a deep copy of the board
       return;
@@ -45,20 +46,20 @@ export function solvePuzzle(puzzle: PuzzleState): Board[] {
 
     for (const variant of variants) {
       for (const { row, col } of emptyCells) {
-        if (solutions.length > 0) {
-          return
-        }
+        // if (solutions.length > 0) {
+        //   return
+        // }
         if (placePiece(board, variant, row, col)) {
           // Track all occupied cells by the piece
-          const occupiedCells = getOccupiedCells(variant, row, col);
-          updateEmptyCells(occupiedCells, true); // Update emptyCells after a successful placement
+          // const occupiedCells = getOccupiedCells(variant, row, col);
+          // updateEmptyCells(occupiedCells, true); // Update emptyCells after a successful placement
 
           backtrack(index + 1);
           removePiece(board, piece.id);
 
           // Restore the board and update emptyCells after backtracking
           removePiece(board, piece.id);
-          updateEmptyCells(occupiedCells, false); // Update emptyCells for all occupied cells
+          // updateEmptyCells(occupiedCells, false); // Update emptyCells for all occupied cells
         }
       }
     }

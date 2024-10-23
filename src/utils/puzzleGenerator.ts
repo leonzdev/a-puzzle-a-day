@@ -95,12 +95,17 @@ export function isValidPlacement(
   row: number,
   col: number
 ): boolean {
+  if (row + piece.shape.length - 1 >= board.length ||
+    col + piece.shape[0].length - 1 >= board[0].length
+  ) {
+    return false
+  }
   for (let i = 0; i < piece.shape.length; i++) {
     for (let j = 0; j < piece.shape[i].length; j++) {
       if (piece.shape[i][j]) {
         if (
-          row + i >= board.length ||
-          col + j >= board[0].length ||
+          // row + i >= board.length ||
+          // col + j >= board[0].length ||
           board[row + i][col + j] !== -1
         ) {
           return false;
