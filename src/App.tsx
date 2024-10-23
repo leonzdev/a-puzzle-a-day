@@ -7,7 +7,7 @@ import PieceSelector from './components/PieceSelector';
 import { generatePuzzle } from './utils/puzzleGenerator';
 import { solvePuzzle } from './utils/puzzleSolver';
 import { Board, Piece, PuzzleState } from './types';
-import { placePiece, removePiece, rotatePiece, flipPiece, getAllVariants } from './utils/pieceUtils';
+import { placePiece, removePiece, rotatePiece, flipPiece } from './utils/pieceUtils';
 
 function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
