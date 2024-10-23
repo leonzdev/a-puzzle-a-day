@@ -17,6 +17,7 @@ function App() {
   const [placedPieces, setPlacedPieces] = useState<Set<number>>(new Set());
   const [solutions, setSolutions] = useState<Board[]>([]);
   const [currentSolutionIndex, setCurrentSolutionIndex] = useState(-1);
+  const [isSolving, setIsSolving] = useState(false);
 
   useEffect(() => {
     const newPuzzle = generatePuzzle(currentDate);
@@ -111,8 +112,35 @@ function App() {
   };
 
   const handleSolve = () => {
+    handleSolveAsync()
+  }
+
+  const getPrecalculatedSolutions = async (): Promise<Board[]> => {
+    try {
+      const solutionsUrl = `solutions/${currentDate.getMonth()}_${currentDate.getDate()}.json`;
+      console.log("Fetch precalculated solutions")
+      const response = await fetch(solutionsUrl);
+      if (response.ok) {
+        return await response.json();
+      } else {
+        throw new Error("Failed to parse response");
+      }
+    } catch (error) {
+      console.error("Failed to fetch precalculated solutions. " + error);
+      return []
+    }
+  }
+
+  const handleSolveAsync = async () => {
     if (solutions.length === 0) {
-      const newSolutions = solvePuzzle(generatePuzzle(currentDate));
+      setIsSolving(true);
+      // try to get precalculated solutions
+      let newSolutions: Board[] = await getPrecalculatedSolutions();
+      if (newSolutions.length === 0) {
+        newSolutions = solvePuzzle(generatePuzzle(currentDate));
+      }
+
+      // const newSolutions = solvePuzzle(generatePuzzle(currentDate));
       if (newSolutions.length > 0) {
         setPuzzle((prev) => ({
           ...prev,
@@ -122,7 +150,6 @@ function App() {
       }
       setSolutions(newSolutions);
       setCurrentSolutionIndex(0);
-
     } else {
       const nextIndex = (currentSolutionIndex + 1) % solutions.length
       setPuzzle((prev) => ({
@@ -132,6 +159,7 @@ function App() {
       setPlacedPieces(new Set([0, 1, 2, 3, 4, 5, 6, 7]));
       setCurrentSolutionIndex(nextIndex);
     }
+    setIsSolving(false);
   };
 
   return (
@@ -145,7 +173,7 @@ function App() {
           onCellClick={handleCellClick}
         />
         <div className="flex justify-center space-x-4 mb-4">
-          {solutions.length == 0 && (
+          {solutions.length == 0 && !isSolving && (
             <button
               className={`px-4 py-2 rounded ${
                 removeMode
@@ -158,7 +186,7 @@ function App() {
             </button>
           )}
 
-          {solutions.length == 0 && (
+          {solutions.length == 0 && !isSolving && (
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:opacity-90 disabled:opacity-50"
               onClick={handleRotate}
@@ -167,7 +195,7 @@ function App() {
               <RotateCw className="w-5 h-5" />
             </button>
           )}
-          {solutions.length == 0 && (
+          {solutions.length == 0 && !isSolving && (
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:opacity-90 disabled:opacity-50"
               onClick={handleFlip}
@@ -179,6 +207,7 @@ function App() {
           <button
             className="px-4 py-2 bg-yellow-500 text-white rounded hover:opacity-90"
             onClick={handleSolve}
+            disabled={isSolving}
           >
             <Lightbulb className="w-5 h-5" /> 
             {solutions.length === 0 ? '' : `${currentSolutionIndex + 1}/${solutions.length}`}
